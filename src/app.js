@@ -1,7 +1,19 @@
-const {connectDB} = require('./config/database')
+const {connectDB} = require('./config/database');
 const express = require("express");
+const {User} = require("./models/user-model");
 
 const app = express();
+
+app.post('/signUp',(req,res)=>{
+    const userObj = {
+        firstName:"Sachin",
+        lastName:"Tendulkar",
+        emailId:"sacin@gmail.com",
+        password:"sachin@123"
+    }
+    const user = new User(userObj)
+    user.save().then(()=>res.send("Successfully inserted the data")).catch(()=>res.status(400).status("Failed to insert the data"))
+})
 
 connectDB().then(()=>{
     app.listen(3000,(err,res)=>{
