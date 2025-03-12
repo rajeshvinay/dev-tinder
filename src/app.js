@@ -2,25 +2,33 @@ const express = require("express");
 
 const app = express();
 
-app.use("/user",(req,res,next)=>{
-    // res.send(" hello from middleware")
-    next();
+const {adminAuth,userAuth} = require('./middlewares/auth')
+
+app.use('/admin',adminAuth)
+
+app.get('/admin',(req,res)=>{
+    res.send(" generic admin ")
 })
 
-// Regex based route with expects the end point to have A
-app.get(/A/,(req,res)=>{
-    res.send("actual user resp")
+app.get('/admin/getAllData',(req,res)=>{
+    res.send(" Admin all get data ")
 })
 
-// dynamic route with params
-app.get("/user/:userId/:userName/:password",(req,res)=>{
-    const userDetails = req.params
-    console.log(userDetails)
-    res.send(" dynamic route ")
+app.get('/admin/deleteUser',(req,res)=>{
+    res.send(" Deleted a User ")
 })
 
-app.post("/user",(req,res)=>{
-    res.send("actual post user resp")
+app.get('/user/getUser',userAuth,(req,res)=>{
+    const userName = req.query.userdetails.userName
+    res.send(" User data fetched ",userName)
+})
+
+//catch all unhandled errors
+app.use('/',(err,req,res,next)=>{
+    if(err){
+        console.log(err)
+        res.status(500).send("An unexpected error happened. Please contact the support team.")
+    }
 })
 
 app.listen(3000,(err,res)=>{
